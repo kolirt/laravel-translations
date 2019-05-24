@@ -1,0 +1,35 @@
+{
+  "name": "kolirt/laravel-translations",
+  "description": "Translations",
+  "keywords": [
+    "laravel",
+    "translations"
+  ],
+  "license": "MIT",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Asan Abdurakhmanov",
+      "email": "asan11@outlook.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "files": [
+      "src/helpers.php"
+    ],
+    "psr-4": {
+      "Kolirt\\Translations\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Kolirt\\Translations\\ServiceProvider"
+      ],
+      "aliases": {
+        "Translations": "Kolirt\\Translations\\Facade\\Translations"
+      }
+    }
+  }
+}

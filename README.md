@@ -5,8 +5,6 @@ Package tested with Laravel 5.8. Other versions are not tested.
 | ---------------- | ------- |
 | 5.8.*            | ✅      |
 
-
-
 ## Installation
 ```
 $ composer require kolirt/laravel-translations
@@ -14,6 +12,7 @@ $ composer require kolirt/laravel-translations
 ```
 $ php artisan translations:install
 ```
+Configure translations config on config/translations.php path.
 
 ## Usage
 You need use Kolirt\Translations\Traits\Translatable trait to you model and fill $translatable property.

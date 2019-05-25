@@ -8,17 +8,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 trait Translatable
 {
 
-    protected $translationsToSave = [];
+    protected $translatable = [];
+    private $translationsToSave = [];
 
     public static function bootTranslatable()
     {
         $class = new self;
 
-        if (($class->translatable ?? null) && config('translations.active', true)) {
+        if (!empty($class->translatable) && config('translations.active', true)) {
             static::addGlobalScope('translatable', function($builder) use ($class){
                 $builder->addSelect(\DB::raw($class->getTable() . ".*"));
 
-                foreach (($class->translatable ?? []) as $key) {
+                foreach ($class->translatable as $key) {
                     $builder->addSelect($class->generateQuery($class, $key));
                 }
             });
@@ -48,7 +49,7 @@ trait Translatable
     public function fillTranslations(array $attributes)
     {
         foreach ($attributes as $column => $attribute) {
-            if (in_array($column, $this->translatable ?? [])) {
+            if (in_array($column, $this->translatable)) {
                 foreach ((is_array($attribute) ? $attribute : []) as $lang => $value) {
                     if (in_array($lang, config('translations.locales', []))) {
                         $this->translationsToSave[$column][$lang] = $value;
@@ -150,7 +151,7 @@ trait Translatable
      */
     public function translations($column)
     {
-        if (!in_array($column, $this->translatable ?? [])) {
+        if (!in_array($column, $this->translatable)) {
             return null;
         }
 

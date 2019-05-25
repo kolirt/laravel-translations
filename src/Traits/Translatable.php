@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 trait Translatable
 {
 
-    protected $translatable = [];
     private $translationsToSave = [];
 
     public static function bootTranslatable()
@@ -49,7 +48,7 @@ trait Translatable
     public function fillTranslations(array $attributes)
     {
         foreach ($attributes as $column => $attribute) {
-            if (in_array($column, $this->translatable)) {
+            if (in_array($column, $this->translatable ?? [])) {
                 foreach ((is_array($attribute) ? $attribute : []) as $lang => $value) {
                     if (in_array($lang, config('translations.locales', []))) {
                         $this->translationsToSave[$column][$lang] = $value;
@@ -151,7 +150,7 @@ trait Translatable
      */
     public function translations($column)
     {
-        if (!in_array($column, $this->translatable)) {
+        if (!in_array($column, $this->translatable ?? [])) {
             return null;
         }
 

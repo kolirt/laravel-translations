@@ -49,10 +49,12 @@ trait Translatable
     {
         foreach ($attributes as $column => $attribute) {
             if (in_array($column, $this->translatable ?? [])) {
-                foreach (config('translations.locales', []) as $lang) {
-                    $this->translationsToSave[$column][$lang] = $attribute[$lang] ?? null;
+                foreach ($attribute as $lang => $value) {
+                    if (in_array($lang, config('translations.locales', []))) {
+                        $this->translationsToSave[$column][$lang] = $value;
+                    }
                 }
-                $attributes[$column] = $attribute[config('app.fallback_locale')] ?? null;
+                $attributes[$column] = $attribute[config('app.fallback_locale')] ?? $this->translation($column, config('app.fallback_locale'));
             }
         }
 
@@ -143,17 +145,17 @@ trait Translatable
     /**
      * Get all translations by column name.
      *
-     * @param $key
+     * @param $column
      * @return array|null
      */
-    public function translations($key)
+    public function translations($column)
     {
-        if (!in_array($key, $this->translatable ?? [])) {
+        if (!in_array($column, $this->translatable ?? [])) {
             return null;
         }
 
         $result = [];
-        $value = $this->translations_all->where('key', $key);
+        $value = $this->translations_all->where('key', $column);
 
         foreach (config('translations.locales', []) as $lang) {
             $result[$lang] = $value->where('lang', $lang)->first()->value ?? null;
@@ -165,17 +167,17 @@ trait Translatable
     /**
      * Get translation for current language by column name.
      *
-     * @param $key
+     * @param $column
      * @param null $lang
      * @return null
      */
-    public function translation($key, $lang = null)
+    public function translation($column, $lang = null)
     {
         if (is_null($lang)) {
             $lang = app()->getLocale();
         }
 
-        $value = $this->translations_all->where('key', $key)->where('lang', $lang)->first();
+        $value = $this->translations_all->where('key', $column)->where('lang', $lang)->first();
 
         return $value->value ?? null;
     }
@@ -194,12 +196,12 @@ trait Translatable
      * Generate a query for select translation.
      *
      * @param $class
-     * @param $key
+     * @param $column
      * @return mixed
      */
-    private function generateQuery($class, $key)
+    private function generateQuery($class, $column)
     {
-        return \DB::raw("(SELECT `value` FROM `translations` WHERE `translation_id`=`" . $class->getTable() . "`.`" . $class->getKeyName() . "` AND `translation_type`='" . addcslashes(self::class, '\\') . "' AND `lang`='" . app()->getLocale() . "' AND `key`='" . $key . "') as `" . $key . "`");
+        return \DB::raw("(SELECT `value` FROM `translations` WHERE `translation_id`=`" . $class->getTable() . "`.`" . $class->getKeyName() . "` AND `translation_type`='" . addcslashes(self::class, '\\') . "' AND `lang`='" . app()->getLocale() . "' AND `key`='" . $column . "') as `" . $column . "`");
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace Kolirt\Translations;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -22,6 +24,26 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             __DIR__ . '/../config/translations.php' => config_path('translations.php')
         ]);
+
+        Validator::extend('unique_loc', function($attribute, $value, $parameters){
+            $lang = last(explode('.', $attribute));
+            if (!in_array($lang, config('translations.locales', [])))
+                throw new \Exception('Lang not exist in translations.locales config');
+
+            $table = $parameters[0];
+            $key = $parameters[1];
+            $id = $parameters[2] ?? null;
+
+            $validator = Validator::make([
+                'value' => $value
+            ], [
+                'value' => [
+                    Rule::unique('translations')->ignore($id, 'translation_id')->where('lang', $lang)->where('translation_type', $table)->where('key', $key)
+                ]
+            ]);
+
+            return !$validator->fails();
+        }, __('validation.unique'));
     }
 
     /**

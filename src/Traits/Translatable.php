@@ -49,7 +49,7 @@ trait Translatable
     {
         foreach ($attributes as $column => $attribute) {
             if (in_array($column, $this->translatable ?? [])) {
-                foreach ($attribute as $lang => $value) {
+                foreach ((is_array($attribute) ? $attribute : []) as $lang => $value) {
                     if (in_array($lang, config('translations.locales', []))) {
                         $this->translationsToSave[$column][$lang] = $value;
                     }
@@ -97,7 +97,7 @@ trait Translatable
                             'lang' => $lang,
                             'key' => $column,
                             'translation_id' => $this->{$this->getKeyName()},
-                            'translation_type' => self::class
+                            'translation_type' => $this->getTable()
                         ]);
 
                         $translation_model->value = $translation;
@@ -189,7 +189,7 @@ trait Translatable
      */
     public function translations_all()
     {
-        return $this->hasMany(Translation::class, 'translation_id', 'id')->where('translation_type', self::class);
+        return $this->hasMany(Translation::class, 'translation_id', $this->getKeyName())->where('translation_type', $this->getTable());
     }
 
     /**
@@ -201,7 +201,7 @@ trait Translatable
      */
     private function generateQuery($class, $column)
     {
-        return \DB::raw("(SELECT `value` FROM `translations` WHERE `translation_id`=`" . $class->getTable() . "`.`" . $class->getKeyName() . "` AND `translation_type`='" . addcslashes(self::class, '\\') . "' AND `lang`='" . app()->getLocale() . "' AND `key`='" . $column . "') as `" . $column . "`");
+        return \DB::raw("(SELECT `value` FROM `translations` WHERE `translation_id`=`" . $class->getTable() . "`.`" . $class->getKeyName() . "` AND `translation_type`='" . $class->getTable() . "' AND `lang`='" . app()->getLocale() . "' AND `key`='" . $column . "') as `" . $column . "`");
     }
 
     /**

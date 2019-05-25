@@ -1,4 +1,9 @@
 # Laravel Translations 
+Package tested with Laravel 5.8. Other versions are not tested.
+
+| Laravel version  | Tested  |
+| ---------------- | ------- |
+| 5.8.*            | ✅      |
 
 ## Installation
 ```
@@ -9,7 +14,6 @@ $ php artisan translations:install
 ```
 
 ## Usage
-
 You need use Kolirt\Translations\Traits\Translatable trait to you model and fill $translatable property.
 ```
 <?php
@@ -49,7 +53,6 @@ $tag->translations('name');
 ```
 
 ##### Save translations.
-
 You can't use next example code, because it don't work for saving translations.
 ```
 $tag = Tag::first();

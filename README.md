@@ -37,7 +37,7 @@ class Tag extends Model
 }
 ```
 
-##### Return current language translation by column name.
+#### Return current language translation by column name.
 ```
 <?php
 
@@ -50,7 +50,7 @@ $tag = Tag::first();
 $tag->translation('name');
 ```
 
-##### Return translations by column name.
+#### Return translations by column name.
 ```
 <?php
 
@@ -58,7 +58,7 @@ $tag = Tag::first();
 $tag->translations('name');
 ```
 
-##### Save translations.
+#### Save translations.
 You can't use next example code, because it don't work for saving translations.
 ```
 <?php
@@ -81,7 +81,7 @@ $tag->update([
 ]);
 ```
 
-##### Validate.
+#### Validate.
 ```
 <?php
 

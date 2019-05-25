@@ -18,7 +18,7 @@ class CreateTranslationsTable extends Migration
 
             $table->string('lang')->index();
             $table->string('key')->index();
-            $table->text('value');
+            $table->longText('value');
 
             $table->unsignedBigInteger('translation_id')->index();
             $table->string('translation_type')->index();

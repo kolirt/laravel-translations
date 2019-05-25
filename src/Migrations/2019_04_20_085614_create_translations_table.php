@@ -16,12 +16,14 @@ class CreateTranslationsTable extends Migration
         Schema::create('translations', function(Blueprint $table){
             $table->bigIncrements('id');
 
-            $table->string('lang');
-            $table->string('key');
+            $table->string('lang')->index();
+            $table->string('key')->index();
             $table->text('value');
 
-            $table->unsignedBigInteger('translation_id');
-            $table->string('translation_type');
+            $table->unsignedBigInteger('translation_id')->index();
+            $table->string('translation_type')->index();
+
+            $table->unique(['lang', 'key', 'translation_id', 'translation_type']);
         });
     }
 

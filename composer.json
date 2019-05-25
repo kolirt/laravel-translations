@@ -1,6 +1,6 @@
 {
   "name": "kolirt/laravel-translations",
-  "description": "Translations",
+  "description": "Translations package for laravel.",
   "keywords": [
     "laravel",
     "translations"

@@ -14,6 +14,16 @@ $ php artisan translations:install
 ```
 Configure translations config on config/translations.php path.
 
+<hr>
+
+##### If you use sql count method or eloquent count method you need disabling global scope 'translatable'
+```
+<?php
+
+$query->withoutGlobalScope('translatable');
+```
+<hr>
+
 ## Usage
 You need use Kolirt\Translations\Traits\Translatable trait to you model and fill $translatable property. You can set the type of the column. The default type is a string.
 ```
@@ -36,7 +46,7 @@ class Tag extends Model
 }
 ```
 
-#### Column types
+### Availables column types
 ```
 string
 text
@@ -54,7 +64,7 @@ dateTime
 timestamp
 ```
 
-#### Return current language translation by column name.
+### Return current language translation by column name
 ```
 <?php
 
@@ -67,7 +77,7 @@ $tag = Tag::first();
 $tag->translation('name');
 ```
 
-#### Return translations by column name.
+### Return translations by column name
 ```
 <?php
 
@@ -75,7 +85,7 @@ $tag = Tag::first();
 $tag->translations('name');
 ```
 
-#### Save translations.
+### Save translations
 You can't use next example code, because it don't work for saving translations.
 ```
 <?php
@@ -98,7 +108,7 @@ $tag->update([
 ]);
 ```
 
-#### Validate.
+### Validate
 ```
 <?php
 

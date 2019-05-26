@@ -18,7 +18,25 @@ class CreateTranslationsTable extends Migration
 
             $table->string('lang')->index();
             $table->string('key')->index();
-            $table->longText('value');
+
+            $table->string('string')->nullable();
+
+            $table->text('text')->nullable();
+            $table->mediumText('mediumText')->nullable();
+            $table->longText('longText')->nullable();
+
+            $table->smallInteger('smallInteger')->nullable();
+            $table->tinyInteger('tinyInteger')->nullable();
+            $table->integer('integer')->nullable();
+            $table->mediumInteger('mediumInteger')->nullable();
+            $table->bigInteger('bigInteger')->nullable();
+
+            $table->decimal('decimal')->nullable();
+            $table->boolean('boolean')->nullable();
+
+            $table->date('date')->nullable();
+            $table->dateTime('dateTime')->nullable();
+            $table->timestamp('timestamp')->nullable();
 
             $table->unsignedBigInteger('translation_id')->index();
             $table->string('translation_type')->index();

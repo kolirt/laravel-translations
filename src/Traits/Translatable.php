@@ -2,6 +2,7 @@
 
 namespace Kolirt\Translations\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Kolirt\Translations\Models\Translation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -15,11 +16,11 @@ trait Translatable
         $class = new self;
 
         if (!empty($class->translatable) && config('translations.active', true)) {
-            static::addGlobalScope('translatable', function($builder) use ($class){
+            static::addGlobalScope('translatable', function(Builder $builder) use ($class){
                 $builder->addSelect(\DB::raw($class->getTable() . ".*"));
 
-                foreach ($class->translatable as $key) {
-                    $builder->addSelect($class->generateQuery($class, $key));
+                foreach ($class->translatable as $column => $type) {
+                    $builder->addSelect($class->generateQuery($class, $column, $type));
                 }
             });
         }
@@ -48,7 +49,7 @@ trait Translatable
     public function fillTranslations(array $attributes)
     {
         foreach ($attributes as $column => $attribute) {
-            if (in_array($column, $this->translatable ?? [])) {
+            if (isset($this->translatable[$column]) || in_array($column, $this->translatable ?? [])) {
                 foreach ((is_array($attribute) ? $attribute : []) as $lang => $value) {
                     if (in_array($lang, config('translations.locales', []))) {
                         $this->translationsToSave[$column][$lang] = $value;
@@ -100,7 +101,8 @@ trait Translatable
                             'translation_type' => $this->getTable()
                         ]);
 
-                        $translation_model->value = $translation;
+                        $type = $this->translatable[$column] ?? Translation::COLUMN_TYPE[0];
+                        $translation_model->$type = $translation;
 
                         $translation_model->save();
                     }
@@ -199,9 +201,14 @@ trait Translatable
      * @param $column
      * @return mixed
      */
-    private function generateQuery($class, $column)
+    private function generateQuery($class, $column, $type)
     {
-        return \DB::raw("(SELECT `value` FROM `translations` WHERE `translation_id`=`" . $class->getTable() . "`.`" . $class->getKeyName() . "` AND `translation_type`='" . $class->getTable() . "' AND `lang`='" . app()->getLocale() . "' AND `key`='" . $column . "') as `" . $column . "`");
+        if (!in_array($type, Translation::COLUMN_TYPE)) {
+            $column = $type;
+            $type = Translation::COLUMN_TYPE[0];
+        }
+
+        return \DB::raw("(SELECT `" . $type . "` FROM `translations` WHERE `translation_id`=`" . $class->getTable() . "`.`" . $class->getKeyName() . "` AND `translation_type`='" . $class->getTable() . "' AND `lang`='" . app()->getLocale() . "' AND `key`='" . $column . "') as `" . $column . "`");
     }
 
     /**

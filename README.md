@@ -15,7 +15,7 @@ $ php artisan translations:install
 Configure translations config on config/translations.php path.
 
 ## Usage
-You need use Kolirt\Translations\Traits\Translatable trait to you model and fill $translatable property.
+You need use Kolirt\Translations\Traits\Translatable trait to you model and fill $translatable property. You can set the type of the column. The default type is a string.
 ```
 <?php
 
@@ -29,11 +29,29 @@ class Tag extends Model
 
     use Translatable;
 
-    protected $fillable = ['name', 'slug', 'sort_order', 'active'];
+    protected $fillable = ['name', 'slug', 'description', 'sort_order', 'active'];
 
-    protected $translatable = ['name', 'slug'];
+    protected $translatable = ['name', 'slug', 'description' => 'text'];
     
 }
+```
+
+#### Column types
+```
+string
+text
+mediumText
+longText
+smallInteger
+tinyInteger
+integer
+mediumInteger
+bigInteger
+decimal
+boolean
+date
+dateTime
+timestamp
 ```
 
 #### Return current language translation by column name.

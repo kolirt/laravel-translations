@@ -17,7 +17,7 @@ Configure translations config on config/translations.php path.
 <hr>
 
 ##### If you use sql count method or eloquent count method you need disabling global scope 'translatable'
-```
+```php
 <?php
 
 $query->withoutGlobalScope('translatable');
@@ -26,7 +26,7 @@ $query->withoutGlobalScope('translatable');
 
 ## Usage
 You need use Kolirt\Translations\Traits\Translatable trait to you model and fill $translatable property. You can set the type of the column. The default type is a string.
-```
+```php
 <?php
 
 namespace App\Models;
@@ -65,7 +65,7 @@ timestamp
 ```
 
 ### Return current language translation by column name
-```
+```php
 <?php
 
 $tag = Tag::first();
@@ -78,7 +78,7 @@ $tag->translation('name');
 ```
 
 ### Return translations by column name
-```
+```php
 <?php
 
 $tag = Tag::first();
@@ -87,7 +87,7 @@ $tag->translations('name');
 
 ### Save translations
 You can't use next example code, because it don't work for saving translations.
-```
+```php
 <?php
 
 $tag = Tag::first();
@@ -96,7 +96,7 @@ $tag->save();
 ``` 
 
 You need use update method for saving translations.
-```
+```php
 <?php
 
 $tag = Tag::first();
@@ -109,7 +109,7 @@ $tag->update([
 ```
 
 ### Validate
-```
+```php
 <?php
 
 $request->validate([
@@ -126,4 +126,12 @@ $request->validate([
             'en' => 'en label'
         ]
 */
+```
+
+### Local scope
+You can disable globalScope in config and use local scope.
+```php
+<?php
+
+Tag::translatable()->first();
 ```

@@ -15,7 +15,7 @@ trait Translatable
     {
         $class = new self;
 
-        if (!empty($class->translatable) && config('translations.active', true)) {
+        if (!empty($class->translatable) && config('translations.active', true) && !config('translations.disableGlobalScope', false)) {
             static::addGlobalScope('translatable', function(Builder $builder) use ($class){
                 $builder->addSelect(\DB::raw($class->getTable() . ".*"));
 
@@ -23,6 +23,15 @@ trait Translatable
                     $builder->addSelect($class->generateQuery($class, $column, $type));
                 }
             });
+        }
+    }
+
+    public function scopeTranslatable($builder)
+    {
+        $builder->addSelect(\DB::raw($this->getTable() . ".*"));
+
+        foreach ($this->translatable as $column => $type) {
+            $builder->addSelect($this->generateQuery($this, $column, $type));
         }
     }
 

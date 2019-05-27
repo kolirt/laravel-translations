@@ -2,5 +2,6 @@
 
 return [
     'locales' => ['uk', 'en'],
-    'active' => true
+    'active' => true,
+    'disableGlobalScope' => false
 ];

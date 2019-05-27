@@ -59,12 +59,21 @@ trait Translatable
     {
         foreach ($attributes as $column => $attribute) {
             if (isset($this->translatable[$column]) || in_array($column, $this->translatable ?? [])) {
-                foreach ((is_array($attribute) ? $attribute : []) as $lang => $value) {
-                    if (in_array($lang, config('translations.locales', []))) {
-                        $this->translationsToSave[$column][$lang] = $value;
+                if (is_array($attribute)) {
+                    foreach ((is_array($attribute) ? $attribute : []) as $lang => $value) {
+                        if (in_array($lang, config('translations.locales', []))) {
+                            $this->translationsToSave[$column][$lang] = $value;
+                        }
                     }
+
+                    $attributes[$column] = $attribute[config('app.fallback_locale')] ?? $this->translation($column, config('app.fallback_locale'));
+                } else if (is_string($attribute)) {
+                    foreach (config('translations.locales', []) as $lang) {
+                        $this->translationsToSave[$column][$lang] = $attribute;
+                    }
+
+                    $attributes[$column] = $attribute;
                 }
-                $attributes[$column] = $attribute[config('app.fallback_locale')] ?? $this->translation($column, config('app.fallback_locale'));
             }
         }
 

@@ -114,7 +114,7 @@ $tag->update([
 
 $request->validate([
     'name.*' => [
-        'unique_loc:table,name,id' // id not required
+        'unique_loc:table,type,name,id' // id not required
     ],
 ]);
 

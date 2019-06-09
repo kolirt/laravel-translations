@@ -31,13 +31,14 @@ class ServiceProvider extends BaseServiceProvider
                 throw new \Exception('Lang not exist in translations.locales config');
 
             $table = $parameters[0];
-            $key = $parameters[1];
-            $id = $parameters[2] ?? null;
+            $type = $parameters[1];
+            $key = $parameters[2];
+            $id = $parameters[3] ?? null;
 
             $validator = Validator::make([
-                'value' => $value
+                $type => $value
             ], [
-                'value' => [
+                $type => [
                     Rule::unique('translations')->ignore($id, 'translation_id')->where('lang', $lang)->where('translation_type', $table)->where('key', $key)
                 ]
             ]);

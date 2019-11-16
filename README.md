@@ -24,6 +24,9 @@ $query->withoutGlobalScope('translatable');
 ```
 <hr>
 
+## Important
+If you use **where** method with translatable fields then you will see that it isn't working. You have to use **having** method.
+
 ## Usage
 You need use Kolirt\Translations\Traits\Translatable trait to you model and fill $translatable property. You can set the type of the column. The default type is a string.
 ```php

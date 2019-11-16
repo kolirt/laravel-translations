@@ -16,7 +16,7 @@ trait Translatable
         $class = new self;
 
         if (!empty($class->translatable) && config('translations.active', true) && !config('translations.disableGlobalScope', false)) {
-            static::addGlobalScope('translatable', function(Builder $builder) use ($class){
+            static::addGlobalScope('translatable', function (Builder $builder) use ($class) {
                 $builder->addSelect(\DB::raw($class->getTable() . ".*"));
 
                 foreach ($class->translatable as $column => $type) {
@@ -38,7 +38,7 @@ trait Translatable
     /**
      * Fill the model with an array of attributes.
      *
-     * @param  array $attributes
+     * @param array $attributes
      * @return $this
      *
      * @throws \Illuminate\Database\Eloquent\MassAssignmentException
@@ -83,7 +83,7 @@ trait Translatable
     /**
      * Save the model to the database.
      *
-     * @param  array $options
+     * @param array $options
      * @return bool
      * @throws \Exception
      */
@@ -113,9 +113,9 @@ trait Translatable
                 foreach ($translationsToSave as $column => $translations) {
                     foreach ($translations as $lang => $translation) {
                         $translation_model = Translation::firstOrNew([
-                            'lang' => $lang,
-                            'key' => $column,
-                            'translation_id' => $this->{$this->getKeyName()},
+                            'lang'             => $lang,
+                            'key'              => $column,
+                            'translation_id'   => $this->{$this->getKeyName()},
                             'translation_type' => $this->getTable()
                         ]);
 
@@ -209,7 +209,8 @@ trait Translatable
      */
     public function translations_all()
     {
-        return $this->hasMany(Translation::class, 'translation_id', $this->getKeyName())->where('translation_type', $this->getTable());
+        return $this->hasMany(Translation::class, 'translation_id', $this->getKeyName())
+            ->where('translation_type', $this->getTable());
     }
 
     /**
@@ -217,11 +218,12 @@ trait Translatable
      *
      * @param $class
      * @param $column
+     * @param $type
      * @return mixed
      */
     private function generateQuery($class, $column, $type)
     {
-        if (!in_array($type, Translation::COLUMN_TYPE)) {
+        if (is_int($column)) {
             $column = $type;
             $type = Translation::COLUMN_TYPE[0];
         }

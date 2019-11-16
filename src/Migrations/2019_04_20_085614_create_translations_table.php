@@ -13,7 +13,7 @@ class CreateTranslationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('translations', function(Blueprint $table){
+        Schema::create('translations', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->string('lang')->index();
@@ -42,6 +42,7 @@ class CreateTranslationsTable extends Migration
             $table->string('translation_type')->index();
 
             $table->unique(['lang', 'key', 'translation_id', 'translation_type']);
+            $table->index(['lang', 'key', 'translation_id', 'translation_type']);
         });
     }
 

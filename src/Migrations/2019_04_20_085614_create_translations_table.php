@@ -16,8 +16,8 @@ class CreateTranslationsTable extends Migration
         Schema::create('translations', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('lang')->index();
-            $table->string('key')->index();
+            $table->string('lang');
+            $table->string('key');
 
             $table->string('string')->nullable();
 
@@ -38,8 +38,8 @@ class CreateTranslationsTable extends Migration
             $table->dateTime('dateTime')->nullable();
             $table->timestamp('timestamp')->nullable();
 
-            $table->unsignedBigInteger('translation_id')->index();
-            $table->string('translation_type')->index();
+            $table->unsignedBigInteger('translation_id');
+            $table->string('translation_type');
 
             $table->unique(['lang', 'key', 'translation_id', 'translation_type']);
             $table->index(['lang', 'key', 'translation_id', 'translation_type']);

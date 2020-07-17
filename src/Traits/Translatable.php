@@ -170,18 +170,20 @@ trait Translatable
      */
     public function translations($column)
     {
-        if (!in_array($column, $this->translatable ?? [])) {
-            return null;
+        if (isset($this->translatable[$column]) || in_array($column, $this->translatable ?? [])) {
+            $type = $this->translatable[$column] ?? Translation::COLUMN_TYPE[0];
+
+            $result = [];
+            $value = $this->translations_all->where('key', $column);
+
+            foreach (config('translations.locales', []) as $lang) {
+                $result[$lang] = $value->where('lang', $lang)->first()->{$type} ?? null;
+            }
+
+            return $result;
         }
 
-        $result = [];
-        $value = $this->translations_all->where('key', $column);
-
-        foreach (config('translations.locales', []) as $lang) {
-            $result[$lang] = $value->where('lang', $lang)->first()->value ?? null;
-        }
-
-        return $result;
+        return null;
     }
 
     /**
@@ -197,9 +199,11 @@ trait Translatable
             $lang = app()->getLocale();
         }
 
+        $type = $this->translatable[$column] ?? Translation::COLUMN_TYPE[0];
+
         $value = $this->translations_all->where('key', $column)->where('lang', $lang)->first();
 
-        return $value->value ?? null;
+        return $value->{$type} ?? null;
     }
 
     /**
